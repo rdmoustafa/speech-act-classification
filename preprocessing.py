@@ -2,7 +2,7 @@ import pandas as pd
 
 # TODO sentence preprocessing, turn big paragraphs into single sentences
 
-file_path = "../interrater_data.xlsx"
+file_path = "data/interrater_data.xlsx"
 # Read the Excel file into a pandas DataFrame
 excel_file = pd.read_excel(file_path)
 
