@@ -29,7 +29,6 @@ def label_csv(path):
     sentence_pattern = r'(?<=[.!?])\s+'
 
     # Split the paragraph into sentences and clean up the unnecessary dots and make it lower case
-    # TODO split all the paragraphs, this is just for the first row
     raw_sentences = []
     for row in raw_df["Text"]:
         raw_sentences += (re.split(sentence_pattern.lower(), row.lower()))
