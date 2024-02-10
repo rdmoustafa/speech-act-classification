@@ -33,8 +33,6 @@ def label_csv(path):
     for row in raw_df["Text"]:
         raw_sentences += (re.split(sentence_pattern.lower(), row.lower()))
 
-    # raw_sentences = re.split(sentence_pattern.lower(), raw_df["Text"][0].lower())
-
     clean_sentences = []
 
     for index, sentence in enumerate(raw_sentences):
@@ -58,9 +56,6 @@ def label_csv(path):
     # This will make the data set unique, will not repeat the same tuple
     labeled_df = pd.DataFrame(list(set(labeled_sentences)), columns=['Sentence', 'Labels'])
 
-    # This will keep duplicate tuples, is it useful to have this information for frequency of occurrences
-    # labeled_df = pd.DataFrame(labeled_sentences, columns=['Sentence', 'Labels'])
-
     # Path to the CSV file
     csv_file = "data/labeled_sentences.csv"
 
@@ -69,6 +64,3 @@ def label_csv(path):
 
     print("Data has been written to", csv_file)
     return labeled_sentences
-
-
-label_csv("data/MainExpTranscriptFullSMAQPER.csv")
