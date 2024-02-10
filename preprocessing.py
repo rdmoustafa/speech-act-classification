@@ -27,9 +27,3 @@ def get_sentences_labels(file_path):
     print("I have labels: ", len(associated_labels))
 
     return sentences, associated_labels
-
-# file_path = "data/interrater_data.xlsx"
-file_path = "data/combined_data_set.xlsx"
-# file_path = "data/"
-
-sentences, labels = get_sentences_labels(file_path)
