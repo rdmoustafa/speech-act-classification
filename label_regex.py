@@ -9,16 +9,16 @@ def label_csv(path):
     # Define your regular expressions and corresponding labels
     patterns = {
         'Communications': r'alpha|bravo|charlie|allcallsigns|roger|over|\^cop\$',
-        'Intel (from newspapers)': r'squirrel|steel|conference|soccer|music|football|\^relig\$|\^advert\$|stolen|arrest'
-                                   r'|festival|family|cottage|interfaith|honda|theft|royal|newspaper|community|princess'
-                                   r'|visit|\^canad',
-        'Situation Awareness': r'\^north\$|\^south\$|\^east\$|\^west\$|\^locat\$|hospital|\^camp\$|police|building|wind'
-                               r'|draysend|charville|firwood|greenhill|wychewood|woodside|sunwood|westhill|the '
+        'Intel (from newspapers)': r'squirrel|steel|conference|soccer|music|football|\^relig\$|\^advert\$|stolen'
+                                   r'|arrest|festival|family|cottage|interfaith|honda|theft|royal|newspaper|community'
+                                   r'|princess|visit|\^canad',
+        'Situation Awareness': r'\^north\$|\^south\$|\^east\$|\^west\$|\^locat\$|hospital|\^camp\$|police|building'
+                               r'|wind|draysend|charville|firwood|greenhill|wychewood|woodside|sunwood|westhill|the '
                                r'copse|esterly|newforest|oldtown|lowtown|newton|black '
-                               r'hill|dripshill|malton|hollywood|winterfold|shrawleywood|beaconhill|trenchwood|casltehill'
-                               r'|linkwood|underwood|wyreforest|castleton|wildwood|hanley|swanton|holbeechwood|astley'
-                               r'|thetfordwood|holvern|langdalewood|thetford|brightwood|epping|worthycopse|breydon'
-                               r'|denston|worthington',
+                               r'hill|dripshill|malton|hollywood|winterfold|shrawleywood|beaconhill|trenchwood'
+                               r'|casltehill|linkwood|underwood|wyreforest|castleton|wildwood|hanley|swanton'
+                               r'|holbeechwood|astley|thetfordwood|holvern|langdalewood|thetford|brightwood|epping'
+                               r'|worthycopse|breydon|denston|worthington',
         'Fire words': r'\^fire\$|water|replen|\^fill\$|\^burn\$|\^extinguish\$|bowser',
         'Rescue words': r'\^load\$|pax|\^evac\$|\^person\$|\^rescue\$|people',
         'Action words': r'recce|check|\^mov\$|\^send\$|support|try|find|support|\^go\$',
@@ -44,23 +44,32 @@ def label_csv(path):
     labeled_sentences = []
 
     for sentence in clean_sentences:
+        # The goal here is to avoid adding communication for every sentence and just add it for those that are purely
+        # communication
+        matched_labels = []
         for label_name, pattern in patterns.items():
             if re.search(pattern, sentence):
-                labeled_sentences.append((sentence, label_name))
+                matched_labels.append(label_name)
+        if len(matched_labels) == 0:
+            labeled_sentences.append((sentence, "None"))
+        elif len(matched_labels) == 1:
+            labeled_sentences.append((sentence, matched_labels[0]))
+        else:
+            for match in matched_labels:
+                if match != "Communications":
+                    labeled_sentences.append((sentence, match))
 
-    # # Print the labeled sentences
-    # for sentence, label in labeled_sentences:
-    #     print(f"Sentence: {sentence} | Label: {label}")
-
-    # Convert the data to a pandas DataFrame
     # This will make the data set unique, will not repeat the same tuple
-    labeled_df = pd.DataFrame(list(set(labeled_sentences)), columns=['Sentence', 'Labels'])
+    labeled_df = pd.DataFrame(list(set(labeled_sentences)), columns=['Sentence', 'Label'])
+    # labeled_df = pd.DataFrame(labeled_sentences, columns=['Sentence', 'Labels'])
 
-    # Path to the CSV file
     csv_file = "data/labeled_sentences.csv"
-
     # Save the DataFrame to a CSV file
     labeled_df.to_csv(csv_file, index=False)
 
-    print("Data has been written to", csv_file)
+    print("Data has been written to: ", csv_file)
     return labeled_sentences
+
+
+if __name__ == "__main__":
+    label_csv("data/MainExpTranscriptFullSMAQPER.csv")
