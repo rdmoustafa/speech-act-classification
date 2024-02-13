@@ -2,7 +2,7 @@ import pandas as pd
 import re  # regular expressions
 
 
-def label_csv(path):
+def single_label(path):
     # Load the CSV file into a pandas DataFrame
     raw_df = pd.read_csv(path)
 
@@ -68,8 +68,84 @@ def label_csv(path):
     labeled_df.to_csv(csv_file, index=False)
 
     print("Data has been written to: ", csv_file)
-    return labeled_sentences
+    # return labeled_sentences
+
+
+def multiclass_labelling(path):
+    # Load the CSV file into a pandas DataFrame
+    raw_df = pd.read_csv(path)
+
+    # Define your regular expressions and corresponding labels
+    patterns = {
+        'Communications': r'alpha|bravo|charlie|allcallsigns|roger|over|\^cop\$',
+        'Intel (from newspapers)': r'squirrel|steel|conference|soccer|music|football|\^relig\$|\^advert\$|stolen'
+                                   r'|arrest|festival|family|cottage|interfaith|honda|theft|royal|newspaper|community'
+                                   r'|princess|visit|\^canad',
+        'Situation Awareness': r'\^north\$|\^south\$|\^east\$|\^west\$|\^locat\$|hospital|\^camp\$|police|building'
+                               r'|wind|draysend|charville|firwood|greenhill|wychewood|woodside|sunwood|westhill|the '
+                               r'copse|esterly|newforest|oldtown|lowtown|newton|black '
+                               r'hill|dripshill|malton|hollywood|winterfold|shrawleywood|beaconhill|trenchwood'
+                               r'|casltehill|linkwood|underwood|wyreforest|castleton|wildwood|hanley|swanton'
+                               r'|holbeechwood|astley|thetfordwood|holvern|langdalewood|thetford|brightwood|epping'
+                               r'|worthycopse|breydon|denston|worthington',
+        'Fire words': r'\^fire\$|water|replen|\^fill\$|\^burn\$|\^extinguish\$|bowser',
+        'Rescue words': r'\^load\$|pax|\^evac\$|\^person\$|\^rescue\$|people',
+        'Action words': r'recce|check|\^mov\$|\^send\$|support|try|find|support|\^go\$',
+        'Reasoning words': r'suggest|\^belie\$|looks|ignore|think|argue'
+    }
+
+    data_dict = {'Sentence': []}
+
+    unique_labels = ["Communications", "Intel (from newspapers)", "Situation Awareness", "Fire words", "Rescue words",
+                     "Action words", "Reasoning words"]
+
+    for label in unique_labels:
+        data_dict[label] = []
+
+    # Define a regular expression pattern to split the paragraph into sentences
+    sentence_pattern = r'(?<=[.!?])\s+'
+
+    # Split the paragraph into sentences and clean up the unnecessary dots and make it lower case
+    raw_sentences = []
+    for row in raw_df["Text"]:
+        raw_sentences += (re.split(sentence_pattern, row))
+
+    clean_sentences = []
+
+    for index, sentence in enumerate(raw_sentences):
+        if sentence.strip() == ".":
+            continue
+        clean_sentences.append(sentence.replace(".", "").strip())
+
+    print(clean_sentences)
+
+    # For each sentence, go through the regex and add label them for each one they match to
+    labeled_sentences = []
+
+    for sentence in clean_sentences:
+        matched_labels = []
+        for label_name, pattern in patterns.items():
+            if re.search(pattern, sentence, re.IGNORECASE):
+                matched_labels.append(label_name)
+        labeled_sentences.append((sentence, matched_labels))
+
+    for sentence, matched_labels in labeled_sentences:
+        print(sentence, matched_labels)
+
+        data_dict['Sentence'].append(sentence)
+        for label in unique_labels:
+            if label in matched_labels:
+                data_dict[label].append(1)
+            else:
+                data_dict[label].append(0)
+
+        # Convert dictionary to DataFrame
+    df = pd.DataFrame(data_dict)
+
+    # Save DataFrame to Excel file
+    df.to_excel("data/labeled_multiclass.xlsx", index=False)
 
 
 if __name__ == "__main__":
-    label_csv("data/MainExpTranscriptFullSMAQPER.csv")
+    single_label("data/MainExpTranscriptFullSMAQPER.csv")
+    multiclass_labelling("data/MainExpTranscriptFullSMAQPER.csv")
