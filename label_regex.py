@@ -22,7 +22,7 @@ original_patterns = {
 }
 
 patterns = {
-    # "Communications": r"alpha|bravo|charlie|allcallsigns|roger|over|\^cop\$",
+    "Communications": r"alpha|bravo|charlie|allcallsigns|roger|over|\^cop\$|copy",
     "Intel (from newspapers)": r"squirrel|steel|conference|soccer|music|football|\^relig\$|\^advert\$|stolen"
                                r"|arrest|festival|family|cottage|interfaith|honda|theft|royal|newspaper|community"
                                r"|princess|visit|\^canad",
@@ -31,14 +31,14 @@ patterns = {
     "Buildings": r"hospital|\^camp\$|police|building|wind",
     "Hills and Forests": r"beaconhill|casltehill|greenhill|westhill|black hill|dripshill|newforest|wyreforest",
     "Named Locations": "draysend|charville|the copse|esterly|oldtown|lowtown|newtonmalton|winterfold|castleton|hanley|swanton|astley|holvern|thetford|epping|worthycopse|breydon|denston|worthington",
-    "Fire words": r"\^fire\$|water|replen|\^fill\$|\^burn\$|\^extinguish\$|bowser",
+    "Fire words": r"fire|water|replen|\^fill\$|\^burn\$|\^extinguish\$|bowser",
     "Rescue words": r"\^load\$|pax|\^evac\$|\^person\$|\^rescue\$|people",
     "Action words": r"recce|check|\^mov\$|\^send\$|support|try|find|support|\^go\$",
     "Reasoning words": r"suggest|\^belie\$|looks|ignore|think|argue"
 }
 
 unique_labels = list(patterns.keys())
-print(unique_labels)
+# print(unique_labels)
 
 # Define a regular expression pattern to split the paragraph into sentences
 sentence_pattern = r'(?<=[.!?])\s+'
@@ -56,7 +56,7 @@ def single_label(path):
     clean_sentences = []
 
     for index, sentence in enumerate(raw_sentences):
-        if sentence.strip() == ".":
+        if sentence.strip() == "." or sentence.strip() == "":
             continue
         clean_sentences.append(sentence.replace(".", "").strip())
 
@@ -71,7 +71,7 @@ def single_label(path):
             if re.search(pattern, sentence):
                 matched_labels.append(label_name)
         if len(matched_labels) == 0:
-            labeled_sentences.append((sentence, "None"))
+            labeled_sentences.append((sentence, "Other"))
         elif len(matched_labels) == 1:
             labeled_sentences.append((sentence, matched_labels[0]))
         else:
@@ -108,7 +108,7 @@ def multiclass_labelling(path):
     clean_sentences = []
 
     for index, sentence in enumerate(raw_sentences):
-        if sentence.strip() == ".":
+        if sentence.strip() == "." or sentence.strip() == "":
             continue
         clean_sentences.append(sentence.replace(".", "").strip())
 
