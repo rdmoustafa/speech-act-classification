@@ -1,7 +1,6 @@
 import pandas as pd
 import re  # regular expressions
 
-# TODO split situation awareness into smaller groups
 # Define your regular expressions and corresponding labels
 original_patterns = {
     'Communications': r'alpha|bravo|charlie|allcallsigns|roger|over|\^cop\$',
@@ -27,10 +26,12 @@ patterns = {
                                r"|arrest|festival|family|cottage|interfaith|honda|theft|royal|newspaper|community"
                                r"|princess|visit|\^canad",
     "Directions": r'\^north|\^south|\^east|\^west|\blocat\w*\b',
-    "Woods": r"firwood|wychewood|woodside|shrawleywood|holbeechwood|hollywood|sunwood|trenchwood|wildwood|brightwood|linkwood|underwood|langdalewood|thetfordwood",
+    "Woods": r"firwood|wychewood|woodside|shrawleywood|holbeechwood|hollywood|sunwood|trenchwood|wildwood|brightwood"
+             r"|linkwood|underwood|langdalewood|thetfordwood",
     "Buildings": r"hospital|\^camp\$|police|building|wind",
     "Hills and Forests": r"beaconhill|casltehill|greenhill|westhill|black hill|dripshill|newforest|wyreforest",
-    "Named Locations": "draysend|charville|the copse|esterly|oldtown|lowtown|newtonmalton|winterfold|castleton|hanley|swanton|astley|holvern|thetford|epping|worthycopse|breydon|denston|worthington",
+    "Named Locations": "draysend|charville|the copse|esterly|oldtown|lowtown|newtonmalton|winterfold|castleton|hanley"
+                       "|swanton|astley|holvern|thetford|epping|worthycopse|breydon|denston|worthington",
     "Fire words": r"fire|water|replen|\^fill\$|\^burn\$|\^extinguish\$|bowser",
     "Rescue words": r"\^load\$|pax|\^evac\$|\^person\$|\^rescue\$|people",
     "Action words": r"recce|check|\^mov\$|\^send\$|support|try|find|support|\^go\$",
@@ -146,5 +147,5 @@ def multiclass_labelling(path):
 
 
 if __name__ == "__main__":
-    single_label("data/MainExpTranscriptFullSMAQPER.csv")
-    multiclass_labelling("data/MainExpTranscriptFullSMAQPER.csv")
+    single_label("data/full-raw-transcript.csv")
+    multiclass_labelling("data/full-raw-transcript.csv")
