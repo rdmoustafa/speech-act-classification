@@ -45,7 +45,7 @@ unique_labels = list(patterns.keys())
 sentence_pattern = r'(?<=[.!?])\s+'
 
 
-def single_label(path):
+def single_label(path, output):
     # Load the CSV file into a pandas DataFrame
     raw_df = pd.read_csv(path)
 
@@ -83,16 +83,14 @@ def single_label(path):
     # This will make the data set unique, will not repeat the same tuple
     labeled_df = pd.DataFrame(list(set(labeled_sentences)), columns=['Sentence', 'Label'])
     # labeled_df = pd.DataFrame(labeled_sentences, columns=['Sentence', 'Labels'])
-
-    csv_file = "data/labeled_sentences.csv"
     # Save the DataFrame to a CSV file
-    labeled_df.to_csv(csv_file, index=False)
+    labeled_df.to_csv(output, index=False)
 
-    print("Data has been written to: ", csv_file)
+    print("Data has been written to: ", output)
     # return labeled_sentences
 
 
-def multiclass_labelling(path):
+def multiclass_labelling(path, output):
     # Load the CSV file into a pandas DataFrame
     raw_df = pd.read_csv(path)
 
@@ -139,14 +137,13 @@ def multiclass_labelling(path):
         # Convert dictionary to DataFrame
     df = pd.DataFrame(data_dict)
 
-    excel_file = "data/labeled_multiclass.xlsx"
     # Save DataFrame to Excel file
-    df.to_excel(excel_file, index=False)
+    df.to_excel(output, index=False)
 
-    print("Data has been written to ", excel_file)
+    print("Data has been written to ", output)
 
 
-def single_label_priority(path):
+def single_label_priority(path, output):
     # Load the CSV file into a pandas DataFrame
     raw_df = pd.read_csv(path)
 
@@ -206,16 +203,15 @@ def single_label_priority(path):
     labeled_df = pd.DataFrame(list(set(labeled_sentences)), columns=['Sentence', 'Label'])
     # labeled_df = pd.DataFrame(labeled_sentences, columns=['Sentence', 'Labels'])
 
-    csv_file = "data/labeled_sentences_prioritised.csv"
     # Save the DataFrame to a CSV file
-    labeled_df.to_csv(csv_file, index=False)
+    labeled_df.to_csv(output, index=False)
 
-    print("Data has been written to: ", csv_file)
+    print("Data has been written to: ", output)
     # return labeled_sentences
 
 
 if __name__ == "__main__":
-    # single_label("data/full-raw-transcript.csv")
-    # multiclass_labelling("data/full-raw-transcript.csv")
+    # single_label("data/full-raw-transcript.csv", "data/labeled_sentences.csv")
+    # multiclass_labelling("data/full-raw-transcript.csv", "data/labeled_multiclass.xlsx")
 
-    single_label_priority("data/full-raw-transcript.csv")
+    single_label_priority("data/full-raw-transcript.csv", "data/labeled_sentences_prioritised.csv")
